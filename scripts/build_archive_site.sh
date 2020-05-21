@@ -51,6 +51,10 @@ pushd "${TMP}" || exit
 git clone -q https://github.com/istio/istio.io.git
 pushd "istio.io" || exit
 
+npm init -y
+npm install --save-dev \
+		babel-preset-minify@v0.5.1
+
 for rel in "${TOBUILD[@]}"; do
   NAME=$(echo "$rel" | cut -d : -f 1)
   TAG=$(echo "$rel" | cut -d : -f 2)
@@ -59,13 +63,13 @@ for rel in "${TOBUILD[@]}"; do
   echo "### Building '${NAME}' from ${TAG} for ${URL}"
   git checkout "${TAG}"
 
-  if [[ "${TAG}" == "release-1.2" || "${TAG}" == "release-1.3" || "${TAG}" == "release-1.5" ]]; then
+  if [[ "${TAG}" == "release-1.2" || "${TAG}" == "release-1.3" ]]; then
     scripts/build_site.sh
   fi
 
   scripts/gen_site.sh "${URL}"
 
-  if [[ "${TAG}" != "release-0.8" && "${TAG}" != "release-1.0" && "${TAG}" != "release-1.1" && "${TAG}" != "release-1.2" && "${TAG}" != "release-1.3" && "${TAG}" == "release-1.4" ]]; then
+  if [[ "${TAG}" == "release-1.4" || "${TAG}" == "release-1.5" ]]; then
     scripts/build_site.sh
   fi
 
